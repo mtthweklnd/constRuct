@@ -1,0 +1,39 @@
+Package: constRuct
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Authors@R: c(
+    person(
+      "Matthew", "Eklund",
+      email = "meklund@arrowheadgrp.com",
+      role = c("aut", "cre")
+    )
+  )
+Description: Provides a suite of functions to streamline and standardize Extract, 
+    Transform, Load (ETL) pipelines. This package simplifies pipeline setup 
+    by managing database (Azure SQL, SQLite) and remote storage connections. 
+    It features a dual-logging system for both high-level run metadata and 
+    granular, step-by-step operational logs using 'log4r'. Includes 
+    helpers for integrating 'pointblank' data validation checks and linking 
+    their reports back to the pipeline's metadata log, ensuring data 
+    quality and run traceability.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
+Imports: 
+    AzureStor,
+    DBI,
+    glue,
+    log4r,
+    odbc,
+    pins,
+    pointblank,
+    rlang,
+    RSQLite,
+    tibble
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
