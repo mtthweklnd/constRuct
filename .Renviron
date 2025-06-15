@@ -1,0 +1,9 @@
+R_CONFIG_ACTIVE="default"
+
+# export AZURITE_ACCOUNTS="my-test-account:bXlhd2Vzb21lcGFzc3dvcmQ="
+AZURITE_BLOB_ENDPOINT="http://127.0.0.1:10000/my-test-account"
+AZURITE_KEY="bXlhd2Vzb21lcGFzc3dvcmQ="
+
+AZURE_BLOB_ENDPOINT="http://127.0.0.1:10000/my-test-account"
+AZURE_KEY="bXlhd2Vzb21lcGFzc3dvcmQ="
+
