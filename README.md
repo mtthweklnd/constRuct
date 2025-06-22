@@ -45,10 +45,14 @@ environment variables. The recommended way to do this is by adding them
 to an `.Renviron` file in your project’s root directory. Use
 `usethis::edit_r_environ()` to easily open and edit this file.
 
+***NOTE***: These examples utilize the Azurite emulator for local
+development:
+[MicrosoftDocs/azure-docs](https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/storage/common/storage-use-emulator.md)
+
 Your `.Renviron` file should contain:
 
 ``` r
-# This example uses the 'Azurite' emaulator
+# 'Azurite' emaulator endpoint details
 AZURE_BLOB_ENDPOINT="http://127.0.0.1:10000/devstoreaccount1"
 AZURE_KEY="Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
 ```
@@ -72,7 +76,7 @@ local_pipeline <- constRuct::PipelineBase$new(
   division = "Research",
   program = "Program"
 )
-#> [2025-06-22 13:57:19] Pipeline 'Local Data Processing' initialized.
+#> [2025-06-22 15:52:55] Pipeline 'Local Data Processing' initialized.
 ```
 
 2.  Add and retrieve datasets from the object’s internal state
@@ -85,7 +89,9 @@ project_sites <- data.frame(
 )
 
 local_pipeline$add_dataset(name = "sites", data = project_sites)
-#> [2025-06-22 13:57:19] Dataset 'sites' added.
+#> [2025-06-22 15:52:55] Dataset 'sites' added. 
+#> [2025-06-22 15:52:55] Dimensions: 3 rows & 2 columns
+
 retrieved_data <- local_pipeline$get_dataset("sites")
 
 print(head(retrieved_data))
@@ -100,8 +106,9 @@ print(head(retrieved_data))
 ``` r
 # All steps are automatically logged with timestamps.
 print(local_pipeline$get_logs())
-#> [1] "[2025-06-22 13:57:19] Pipeline 'Local Data Processing' initialized."
-#> [2] "[2025-06-22 13:57:19] Dataset 'sites' added."
+#> [1] "[2025-06-22 15:52:55] Pipeline 'Local Data Processing' initialized."
+#> [2] "[2025-06-22 15:52:55] Dataset 'sites' added."                       
+#> [3] "[2025-06-22 15:52:55] Dimensions: 3 rows & 2 columns "
 ```
 
 ## Extending the Framework: AzurePipe
@@ -122,17 +129,15 @@ azure_pipeline <- AzurePipe$new(
   division = "Finance",
   program = "Expenses"
 )
-#> [2025-06-22 13:57:19] Pipeline 'Daily Report to Azure' initialized. 
-#> [2025-06-22 13:57:19] Connected to Azure Blob endpoint: http://127.0.0.1:10000/my-test-account
+#> [2025-06-22 15:52:55] Pipeline 'Daily Report to Azure' initialized. 
+#> [2025-06-22 15:52:55] Connected to Azure Blob endpoint: http://127.0.0.1:10000/my-test-account
 ```
 
 2.  List available containers using the `get_containers` active binding
 
 ``` r
-cat("\n--- Available Containers in Azure ---\n")
-#> 
-#> --- Available Containers in Azure ---
 containers <- azure_pipeline$get_containers
+
 print(sapply(containers, function(c) c$name))
 #>   database       logs    targets 
 #> "database"     "logs"  "targets"
@@ -142,7 +147,7 @@ print(sapply(containers, function(c) c$name))
 
 ``` r
 azure_pipeline$add_log("Generating daily summary data.")
-#> [2025-06-22 13:57:19] Generating daily summary data.
+#> [2025-06-22 15:52:55] Generating daily summary data.
 
 daily_summary <- data.frame(
   date = Sys.Date(),
@@ -150,26 +155,22 @@ daily_summary <- data.frame(
   value = round(runif(1, 100, 500))
 )
 azure_pipeline$add_dataset("summary_data", daily_summary)
-#> [2025-06-22 13:57:19] Dataset 'summary_data' added.
+#> [2025-06-22 15:52:55] Dataset 'summary_data' added. 
+#> [2025-06-22 15:52:55] Dimensions: 1 rows & 3 columns
 ```
 
 4.  Use a specialized method to upload the log to Azure
 
 ``` r
-
-azure_pipeline$upload_log_file(
-  file_content = azure_pipeline$get_logs()
-)
-#> [2025-06-22 13:57:19] Uploading log file to container 'logs' as 'run-daily-azure-report-20250622.log'
+azure_pipeline$end_pipeline()
+#> [2025-06-22 15:52:55] Pipeline daily-azure-report ended. Writing logs to file. 
+#> [2025-06-22 15:52:55] Uploading log file 'run-daily-azure-report-20250622.log' to container 'logs'. 
+#> [2025-06-22 15:52:55] Log file successfully uploaded.
 ```
 
 5.  Verify the upload by listing blobs
 
 ``` r
-
-cat("\n--- Verifying Upload in 'logs' Container ---\n")
-#> 
-#> --- Verifying Upload in 'logs' Container ---
 print(azure_pipeline$list_blobs("logs"))
 #>                                  name size isdir  blobtype
 #> 1                            log_test  253 FALSE BlockBlob
@@ -177,5 +178,6 @@ print(azure_pipeline$list_blobs("logs"))
 #> 3             run-20250622-125707.log  405 FALSE BlockBlob
 #> 4             run-20250622-130321.log  405 FALSE BlockBlob
 #> 5             run-20250622-133546.log  364 FALSE BlockBlob
-#> 6 run-daily-azure-report-20250622.log  375 FALSE BlockBlob
+#> 6 run-daily-azure-report-20250622.log  407 FALSE BlockBlob
+#> 7          run-test-name-20250622.log  430 FALSE BlockBlob
 ```

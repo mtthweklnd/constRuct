@@ -49,7 +49,9 @@ PipelineBase <- R6::R6Class(
     #' @param data The dataset object to store (e.g., a data frame).
     add_dataset = function(name, data) {
       self$datasets[[name]] <- data
+
       self$add_log(glue("Dataset '{name}' added."))
+      self$add_log(glue("Dimensions: {nrow(data)} rows & {ncol(data)} columns \n"))
     },
 
     #' @description
@@ -74,6 +76,23 @@ PipelineBase <- R6::R6Class(
     #' @return A character vector of all log entries.
     get_logs = function() {
       unlist(private$.log)
+    },
+
+    #' @description
+    #' Ends the pipeline run and writes the log to a local file
+    #' @returns Returns the path to the log file.
+    end_pipeline = function() {
+      self$add_log(glue("Pipeline {self$pipeline_id} ended. Writing logs to file."))
+
+      if (!dir.exists("_logs")) {
+        dir.create(path = "_logs", showWarnings = FALSE)
+      }
+
+      log_file <- glue("_logs/{private$.run_id}.log")
+
+      content <- self$get_logs()
+      writeLines(content, log_file)
+      return(log_file)
     }
   ),
   private = list(
@@ -119,10 +138,12 @@ AzurePipe <- R6::R6Class(
                           pipeline_id,
                           division = NULL,
                           program = NULL) {
-      super$initialize(pipeline_name = pipeline_name,
-                       pipeline_id = pipeline_id,
-                       division = division,
-                       program = program)
+      super$initialize(
+        pipeline_name = pipeline_name,
+        pipeline_id = pipeline_id,
+        division = division,
+        program = program
+      )
 
       azure_endpoint <- Sys.getenv("AZURE_BLOB_ENDPOINT")
       azure_key <- Sys.getenv("AZURE_KEY")
@@ -169,24 +190,33 @@ AzurePipe <- R6::R6Class(
       AzureStor::get_storage_metadata(cont, blob_name)
     },
 
-
     #' @description
-    #' Uploads text content as a log file to a specified container.
-    #' @param file_content A character vector containing the text to upload.
-    upload_log_file = function(file_content) {
-      log_file <- glue("{private$.run_id}.log")
+    #' Uploads text content as a log file to the logs container.
+    #' @description
+    #' Finalizes the pipeline, writes logs locally, and uploads the log file to Azure.
+    #' This method overrides the parent `end_pipeline` method.
+    #' @return NULL
+    end_pipeline = function() {
+      local_log_path <- super$end_pipeline()
+      log_blob_name <- basename(local_log_path)
       self$add_log(
         glue(
-          "Uploading log file to container '{private$.log_container$name}' as '{log_file}'"
+          "Uploading log file '{log_blob_name}' to container '{private$.log_container$name}'."
         )
       )
 
-      temp_file <- tempfile(fileext = ".log")
-      on.exit(unlink(temp_file))
+      tryCatch({
+        AzureStor::upload_blob(private$.log_container, src = local_log_path, dest = log_blob_name)
 
-      writeLines(file_content, temp_file)
-      AzureStor::upload_blob(private$.log_container, src = temp_file, dest = log_file)
+        self$add_log("Log file successfully uploaded.")
 
+        unlink(local_log_path)
+      }, error = function(e) {
+        self$add_log(paste("Error uploading log file to storage:", e$message))
+
+      })
+
+      invisible(NULL)
     }
   ),
   active = list(

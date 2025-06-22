@@ -26,7 +26,7 @@ Blob Storage. Inherits parameter handling and logging.
 \item \href{#method-AzurePipe-new}{\code{AzurePipe$new()}}
 \item \href{#method-AzurePipe-list_blobs}{\code{AzurePipe$list_blobs()}}
 \item \href{#method-AzurePipe-get_blob_metadata}{\code{AzurePipe$get_blob_metadata()}}
-\item \href{#method-AzurePipe-upload_log_file}{\code{AzurePipe$upload_log_file()}}
+\item \href{#method-AzurePipe-end_pipeline}{\code{AzurePipe$end_pipeline()}}
 \item \href{#method-AzurePipe-clone}{\code{AzurePipe$clone()}}
 }
 }
@@ -109,20 +109,20 @@ A named list of metadata key-value pairs.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AzurePipe-upload_log_file"></a>}}
-\if{latex}{\out{\hypertarget{method-AzurePipe-upload_log_file}{}}}
-\subsection{Method \code{upload_log_file()}}{
-Uploads text content as a log file to a specified container.
+\if{html}{\out{<a id="method-AzurePipe-end_pipeline"></a>}}
+\if{latex}{\out{\hypertarget{method-AzurePipe-end_pipeline}{}}}
+\subsection{Method \code{end_pipeline()}}{
+Uploads text content as a log file to the logs container.
+
+
+Finalizes the pipeline, writes logs locally, and uploads the log file to Azure.
+This method overrides the parent `end_pipeline` method.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AzurePipe$upload_log_file(file_content)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AzurePipe$end_pipeline()}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{file_content}}{A character vector containing the text to upload.}
-}
-\if{html}{\out{</div>}}
+\subsection{Returns}{
+NULL
 }
 }
 \if{html}{\out{<hr>}}

@@ -20,8 +20,7 @@ knitr::opts_chunk$set(
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-`constRuct` provides a simple yet powerful object-oriented framework for creating stateful and reusable ETL (Extract, Transform, Load) pipelines in R. It uses R6 classes to encapsulate parameters, data sets, and logs for each pipeline run, promoting code that is clean, modular, and easy to maintain.
-It includes a base class for core functionality and an example of an inherited class for interacting with Microsoft Azure Blob Storage.
+`constRuct` provides a simple yet powerful object-oriented framework for creating stateful and reusable ETL (Extract, Transform, Load) pipelines in R. It uses R6 classes to encapsulate parameters, data sets, and logs for each pipeline run, promoting code that is clean, modular, and easy to maintain. It includes a base class for core functionality and an example of an inherited class for interacting with Microsoft Azure Blob Storage.
 
 ## Features
 
@@ -44,10 +43,12 @@ remotes::install_github("your-username/constRuct")
 
 To use the `AzurePipe` class, you must provide storage credentials as environment variables. The recommended way to do this is by adding them to an `.Renviron` file in your project's root directory. Use `usethis::edit_r_environ()` to easily open and edit this file.
 
+***NOTE***: These examples utilize the Azurite emulator for local development: [MicrosoftDocs/azure-docs](https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/storage/common/storage-use-emulator.md)
+
 Your `.Renviron` file should contain:
 
 ```{r eval=FALSE, echo=TRUE}
-# This example uses the 'Azurite' emaulator
+# 'Azurite' emaulator endpoint details
 AZURE_BLOB_ENDPOINT="http://127.0.0.1:10000/devstoreaccount1"
 AZURE_KEY="Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="
 ```
@@ -82,6 +83,7 @@ project_sites <- data.frame(
 )
 
 local_pipeline$add_dataset(name = "sites", data = project_sites)
+
 retrieved_data <- local_pipeline$get_dataset("sites")
 
 print(head(retrieved_data))
@@ -93,6 +95,7 @@ print(head(retrieved_data))
 ```{r}
 # All steps are automatically logged with timestamps.
 print(local_pipeline$get_logs())
+
 ```
 
 ## Extending the Framework: AzurePipe
@@ -116,8 +119,8 @@ azure_pipeline <- AzurePipe$new(
 2.  List available containers using the `get_containers` active binding
 
 ```{r}
-cat("\n--- Available Containers in Azure ---\n")
 containers <- azure_pipeline$get_containers
+
 print(sapply(containers, function(c) c$name))
 ```
 
@@ -138,17 +141,11 @@ azure_pipeline$add_dataset("summary_data", daily_summary)
 4.  Use a specialized method to upload the log to Azure
 
 ```{r}
-
-azure_pipeline$upload_log_file(
-  file_content = azure_pipeline$get_logs()
-)
+azure_pipeline$end_pipeline()
 ```
 
 5.  Verify the upload by listing blobs
 
 ```{r}
-
-cat("\n--- Verifying Upload in 'logs' Container ---\n")
 print(azure_pipeline$list_blobs("logs"))
-
 ```

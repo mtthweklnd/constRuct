@@ -3,6 +3,9 @@
 \name{PipelineBase}
 \alias{PipelineBase}
 \title{ETL Pipeline R6 Class}
+\value{
+Returns the path to the log file.
+}
 \description{
 A base R6 class for creating and managing stateful ETL pipelines. It handles
 parameter validation, dataset storage, and logging.
@@ -28,6 +31,7 @@ parameter validation, dataset storage, and logging.
 \item \href{#method-PipelineBase-get_dataset}{\code{PipelineBase$get_dataset()}}
 \item \href{#method-PipelineBase-add_log}{\code{PipelineBase$add_log()}}
 \item \href{#method-PipelineBase-get_logs}{\code{PipelineBase$get_logs()}}
+\item \href{#method-PipelineBase-end_pipeline}{\code{PipelineBase$end_pipeline()}}
 \item \href{#method-PipelineBase-clone}{\code{PipelineBase$clone()}}
 }
 }
@@ -125,6 +129,16 @@ Retrieve all log messages.
 \subsection{Returns}{
 A character vector of all log entries.
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-PipelineBase-end_pipeline"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineBase-end_pipeline}{}}}
+\subsection{Method \code{end_pipeline()}}{
+Ends the pipeline run and writes the log to a local file
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{PipelineBase$end_pipeline()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PipelineBase-clone"></a>}}
