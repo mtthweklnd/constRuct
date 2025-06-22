@@ -23,7 +23,6 @@ LazyData: true
 RoxygenNote: 7.3.2
 Imports: 
     AzureStor,
-    connectapi,
     dplyr,
     httr2,
     R6,
