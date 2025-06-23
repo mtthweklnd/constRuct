@@ -15,8 +15,8 @@ PipelineBase <- R6::R6Class(
     #' @field pipeline_id Unique Identifier for this pipeline
     pipeline_id = NULL,
 
-    #' @field params A list to store parameters used by the pipeline.
-    params = NULL,
+    #' @field params A list to hold arbitrary user-defined attributes.
+    metadata = NULL,
 
     #' @field datasets A list to store datasets (e.g., data frames) used or created.
     datasets = NULL,
@@ -25,24 +25,51 @@ PipelineBase <- R6::R6Class(
     #' @description constructor
     #' @param pipeline_name Name of this pipeline.
     #' @param pipeline_id Identifier for this pipeline
-    #' @param division The division this data belongs to.
-    #' @param program The program subset this data is for.
+    #' @param metadata An optional named list of attributes to add
     #' @return A new `PipelineBase` object.
-    initialize = function(pipeline_name,
-                          pipeline_id,
-                          division = NULL,
-                          program = NULL) {
+    initialize = function(pipeline_name, pipeline_id, metadata = list()) {
+      if (!is.list(initial_metadata) || is.null(names(initial_metadata)) && length(initial_metadata) > 0) {
+        stop("initial_metadata must be a named list.")
+      }
       self$pipeline_name <- pipeline_name
       self$pipeline_id <- pipeline_id
-      private$.run_id <- glue("run-{pipeline_id}-{format(Sys.time(), '%Y%m%d')}")
-
-      private$capture_environment()
-      self$params <- list(division = division, program = program)
+      self$metadata <- initial_metadata
       self$datasets <- list()
+
+      private$.run_id <- glue("run-{pipeline_id}-{format(Sys.time(), '%Y%m%d')}")
+      private$capture_environment()
+
       self$add_log(glue("Pipeline '{self$pipeline_name}' initialized."))
 
+      invisible(self)
     },
 
+    #' @description
+    #' Add or update a single piece of metadata.
+    #' @param key A character string for the metadata name (the key).
+    #' @param value The value to be stored. Can be any R object.
+    set_meta = function(key, value) {
+      if (!is.character(key) || length(key) != 1) {
+        stop("Key must be a single character string.")
+      }
+      self$metadata[[key]] <- value
+      invisible(self)
+    },
+    #' @description
+    #' Retrieve a metadata value for a given key.
+    #' @param key The name of the metadata attribute to retrieve.
+    #' @param default The value to return if the key is not found.
+    #' @return The metadata value, or the default value if not found.
+    get_meta = function(key, default = NULL) {
+      if (!is.character(key) || length(key) != 1) {
+        stop("Key must be a single character string.")
+      }
+      if (exists(key, where = self$metadata)) {
+        return(self$metadata[[key]])
+      } else {
+        return(default)
+      }
+    },
     #' @description
     #' Add a dataset to the pipeline's internal storage.
     #' @param name The name to assign to the dataset (character).
@@ -95,6 +122,22 @@ PipelineBase <- R6::R6Class(
       return(log_file)
     }
   ),
+  print = function(...) {
+    cat("── Pipeline Details ──\n")
+    cat("  Name:", self$pipeline_name, "\n")
+
+    if (length(self$metadata) > 0) {
+      cat("  User Metadata:\n")
+      # Loop through and print each key-value pair
+      for (key in names(self$metadata)) {
+        # Use sprintf for clean, aligned formatting
+        cat(sprintf("    • %-15s: %s\n", key, self$get_meta(key)))
+      }
+    } else {
+      cat("  User Metadata: [None]\n")
+    }
+    invisible(self)
+  },
   private = list(
     .env = NULL,
     .run_id = NULL,
