@@ -35,15 +35,14 @@ You can install the development version of `constRuct` from GitHub with:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("your-username/constRuct")
+remotes::install_github("mtthweklnd/constRuct")
 ```
 
 ## Setup for Azure Integration
 
 To use the `AzurePipe` class, you must provide storage credentials as
 environment variables. The recommended way to do this is by adding them
-to an `.Renviron` file in your project’s root directory. Use
-`usethis::edit_r_environ()` to easily open and edit this file.
+to an `.Renviron` file in your project’s root directory.
 
 ***NOTE***: These examples utilize the Azurite emulator for local
 development:
@@ -71,12 +70,11 @@ library(glue)
 
 # After loading the package, the R6 class generator is available directly.
 local_pipeline <- constRuct::PipelineBase$new(
-  pipeline_name = "Local Data Processing",
+  pipeline_name = "Office Data Processing",
   pipeline_id = "data-processing",
-  division = "Research",
-  program = "Program"
+  metadata = list(Office = "Carlsbad", Department = "Underwriting")
 )
-#> [2025-06-22 15:52:55] Pipeline 'Local Data Processing' initialized.
+#> [2025-06-24 19:21:13] Pipeline 'Office Data Processing' initialized.
 ```
 
 2.  Add and retrieve datasets from the object’s internal state
@@ -89,8 +87,8 @@ project_sites <- data.frame(
 )
 
 local_pipeline$add_dataset(name = "sites", data = project_sites)
-#> [2025-06-22 15:52:55] Dataset 'sites' added. 
-#> [2025-06-22 15:52:55] Dimensions: 3 rows & 2 columns
+#> [2025-06-24 19:21:13] Dataset 'sites' added. 
+#> [2025-06-24 19:21:13] 'sites' dimensions: [ 3 rows x 2 cols ]
 
 retrieved_data <- local_pipeline$get_dataset("sites")
 
@@ -105,10 +103,25 @@ print(head(retrieved_data))
 
 ``` r
 # All steps are automatically logged with timestamps.
-print(local_pipeline$get_logs())
-#> [1] "[2025-06-22 15:52:55] Pipeline 'Local Data Processing' initialized."
-#> [2] "[2025-06-22 15:52:55] Dataset 'sites' added."                       
-#> [3] "[2025-06-22 15:52:55] Dimensions: 3 rows & 2 columns "
+local_pipeline$get_logs()
+#> ---- Pipeline Logs ----
+#> [1] [2025-06-24 19:21:13] Pipeline 'Office Data Processing' initialized.
+#> [2] [2025-06-24 19:21:13] Dataset 'sites' added.
+#> [3] [2025-06-24 19:21:13] 'sites' dimensions: [ 3 rows x 2 cols ]
+```
+
+4.  Custom print method
+
+``` r
+print(local_pipeline)
+#> ---- Office Data Processing ----
+#>    ID: data-processing 
+#>    Date: 2025-06-24 
+#>    Metadata:
+#>       • Office         : Carlsbad
+#>       • Department     : Underwriting
+#>    Datasets:
+#>       • sites          : [ 3 rows x 2 cols ]
 ```
 
 ## Extending the Framework: AzurePipe
@@ -126,11 +139,10 @@ upload the pipeline’s own log file.
 azure_pipeline <- AzurePipe$new(
   pipeline_name = "Daily Report to Azure",
   pipeline_id = "daily-azure-report",
-  division = "Finance",
-  program = "Expenses"
+  metadata = list(division = "Finance", program = "Expenses")
 )
-#> [2025-06-22 15:52:55] Pipeline 'Daily Report to Azure' initialized. 
-#> [2025-06-22 15:52:55] Connected to Azure Blob endpoint: http://127.0.0.1:10000/my-test-account
+#> [2025-06-24 19:21:13] Pipeline 'Daily Report to Azure' initialized. 
+#> [2025-06-24 19:21:13] Connected to Azure Blob endpoint: http://127.0.0.1:10000/my-test-account
 ```
 
 2.  List available containers using the `get_containers` active binding
@@ -147,25 +159,32 @@ print(sapply(containers, function(c) c$name))
 
 ``` r
 azure_pipeline$add_log("Generating daily summary data.")
-#> [2025-06-22 15:52:55] Generating daily summary data.
+#> [2025-06-24 19:21:13] Generating daily summary data.
 
 daily_summary <- data.frame(
   date = Sys.Date(),
-  metric = "user_signups",
-  value = round(runif(1, 100, 500))
+  vendor = "VendCo INC",
+  amount_due = round(runif(1, 100, 500),2)
 )
+
 azure_pipeline$add_dataset("summary_data", daily_summary)
-#> [2025-06-22 15:52:55] Dataset 'summary_data' added. 
-#> [2025-06-22 15:52:55] Dimensions: 1 rows & 3 columns
+#> [2025-06-24 19:21:13] Dataset 'summary_data' added. 
+#> [2025-06-24 19:21:13] 'summary_data' dimensions: [ 1 rows x 3 cols ]
+azure_pipeline$get_dataset("summary_data")
+#>         date     vendor amount_due
+#> 1 2025-06-24 VendCo INC     207.48
+azure_pipeline$add_dataset("mtcars_data", mtcars)
+#> [2025-06-24 19:21:13] Dataset 'mtcars_data' added. 
+#> [2025-06-24 19:21:13] 'mtcars_data' dimensions: [ 32 rows x 11 cols ]
 ```
 
 4.  Use a specialized method to upload the log to Azure
 
 ``` r
 azure_pipeline$end_pipeline()
-#> [2025-06-22 15:52:55] Pipeline daily-azure-report ended. Writing logs to file. 
-#> [2025-06-22 15:52:55] Uploading log file 'run-daily-azure-report-20250622.log' to container 'logs'. 
-#> [2025-06-22 15:52:55] Log file successfully uploaded.
+#> [2025-06-24 19:21:13] Pipeline daily-azure-report ended. Writing logs to file. 
+#> [2025-06-24 19:21:13] Uploading log file 'run-daily-azure-report-20250624.log' to container 'logs'. 
+#> [2025-06-24 19:21:13] Log file successfully uploaded.
 ```
 
 5.  Verify the upload by listing blobs
@@ -179,5 +198,6 @@ print(azure_pipeline$list_blobs("logs"))
 #> 4             run-20250622-130321.log  405 FALSE BlockBlob
 #> 5             run-20250622-133546.log  364 FALSE BlockBlob
 #> 6 run-daily-azure-report-20250622.log  407 FALSE BlockBlob
-#> 7          run-test-name-20250622.log  430 FALSE BlockBlob
+#> 7 run-daily-azure-report-20250624.log  545 FALSE BlockBlob
+#> 8          run-test-name-20250622.log  430 FALSE BlockBlob
 ```

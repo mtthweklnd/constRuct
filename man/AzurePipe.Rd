@@ -31,12 +31,15 @@ Blob Storage. Inherits parameter handling and logging.
 }
 }
 \if{html}{\out{
-<details open><summary>Inherited methods</summary>
+<details><summary>Inherited methods</summary>
 <ul>
 <li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="add_dataset"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-add_dataset'><code>constRuct::PipelineBase$add_dataset()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="add_log"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-add_log'><code>constRuct::PipelineBase$add_log()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="get_dataset"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-get_dataset'><code>constRuct::PipelineBase$get_dataset()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="get_logs"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-get_logs'><code>constRuct::PipelineBase$get_logs()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="get_meta"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-get_meta'><code>constRuct::PipelineBase$get_meta()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="print"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-print'><code>constRuct::PipelineBase$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="set_meta"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-set_meta'><code>constRuct::PipelineBase$set_meta()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -46,7 +49,7 @@ Blob Storage. Inherits parameter handling and logging.
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AzurePipe$new(pipeline_name, pipeline_id, division = NULL, program = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AzurePipe$new(pipeline_name, pipeline_id, metadata)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -56,9 +59,7 @@ constructor
 
 \item{\code{pipeline_id}}{Identifier for this pipeline}
 
-\item{\code{division}}{The division this data belongs to.}
-
-\item{\code{program}}{The program subset this data is for.}
+\item{\code{metadata}}{An optional named list of attributes to add}
 }
 \if{html}{\out{</div>}}
 }

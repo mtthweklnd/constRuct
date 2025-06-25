@@ -1,4 +1,5 @@
 R_CONFIG_ACTIVE="default"
+_R_CHECK_SYSTEM_CLOCK_=0
 
 # export AZURITE_ACCOUNTS="my-test-account:bXlhd2Vzb21lcGFzc3dvcmQ="
 AZURITE_BLOB_ENDPOINT="http://127.0.0.1:10000/my-test-account"

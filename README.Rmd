@@ -36,12 +36,12 @@ You can install the development version of `constRuct` from GitHub with:
 
 ```{r, eval = FALSE}
 # install.packages("remotes")
-remotes::install_github("your-username/constRuct")
+remotes::install_github("mtthweklnd/constRuct")
 ```
 
 ## Setup for Azure Integration
 
-To use the `AzurePipe` class, you must provide storage credentials as environment variables. The recommended way to do this is by adding them to an `.Renviron` file in your project's root directory. Use `usethis::edit_r_environ()` to easily open and edit this file.
+To use the `AzurePipe` class, you must provide storage credentials as environment variables. The recommended way to do this is by adding them to an `.Renviron` file in your project's root directory.
 
 ***NOTE***: These examples utilize the Azurite emulator for local development: [MicrosoftDocs/azure-docs](https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/storage/common/storage-use-emulator.md)
 
@@ -65,10 +65,9 @@ library(glue)
 
 # After loading the package, the R6 class generator is available directly.
 local_pipeline <- constRuct::PipelineBase$new(
-  pipeline_name = "Local Data Processing",
+  pipeline_name = "Office Data Processing",
   pipeline_id = "data-processing",
-  division = "Research",
-  program = "Program"
+  metadata = list(Office = "Carlsbad", Department = "Underwriting")
 )
 
 ```
@@ -94,8 +93,13 @@ print(head(retrieved_data))
 
 ```{r}
 # All steps are automatically logged with timestamps.
-print(local_pipeline$get_logs())
+local_pipeline$get_logs()
 
+```
+
+4. Custom print method
+```{r}
+print(local_pipeline)
 ```
 
 ## Extending the Framework: AzurePipe
@@ -110,8 +114,7 @@ print(local_pipeline$get_logs())
 azure_pipeline <- AzurePipe$new(
   pipeline_name = "Daily Report to Azure",
   pipeline_id = "daily-azure-report",
-  division = "Finance",
-  program = "Expenses"
+  metadata = list(division = "Finance", program = "Expenses")
 )
 
 ```
@@ -131,11 +134,13 @@ azure_pipeline$add_log("Generating daily summary data.")
 
 daily_summary <- data.frame(
   date = Sys.Date(),
-  metric = "user_signups",
-  value = round(runif(1, 100, 500))
+  vendor = "VendCo INC",
+  amount_due = round(runif(1, 100, 500),2)
 )
-azure_pipeline$add_dataset("summary_data", daily_summary)
 
+azure_pipeline$add_dataset("summary_data", daily_summary)
+azure_pipeline$get_dataset("summary_data")
+azure_pipeline$add_dataset("mtcars_data", mtcars)
 ```
 
 4.  Use a specialized method to upload the log to Azure
