@@ -24,7 +24,8 @@ RoxygenNote: 7.3.2
 Imports: 
     AzureStor (>= 3.7.0),
     R6 (>= 2.6.1),
-    glue (>= 1.8.0)
+    glue (>= 1.8.0),
+    assertthat
 Suggests:
     knitr,
     rmarkdown,
