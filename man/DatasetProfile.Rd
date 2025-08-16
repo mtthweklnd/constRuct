@@ -22,6 +22,8 @@ status (e.g., "raw", "cleaned"), and a formal data schema using the
 
 \item{\code{schema}}{A pointblank `col_schema` object.}
 
+\item{\code{status}}{The current processing status of the dataset (e.g., "raw", "cleaned", "transformed").}
+
 \item{\code{metadata}}{A list for storing any other attributes.}
 }
 \if{html}{\out{</div>}}
@@ -30,6 +32,9 @@ status (e.g., "raw", "cleaned"), and a formal data schema using the
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-DatasetProfile-new}{\code{DatasetProfile$new()}}
+\item \href{#method-DatasetProfile-add_metadata}{\code{DatasetProfile$add_metadata()}}
+\item \href{#method-DatasetProfile-get_metadata}{\code{DatasetProfile$get_metadata()}}
+\item \href{#method-DatasetProfile-set_status}{\code{DatasetProfile$set_status()}}
 \item \href{#method-DatasetProfile-validate}{\code{DatasetProfile$validate()}}
 \item \href{#method-DatasetProfile-clone}{\code{DatasetProfile$clone()}}
 }
@@ -53,6 +58,62 @@ Create a new profile object.
 \item{\code{schema}}{A `col_schema` object created with `pointblank::col_schema()`.}
 
 \item{\code{metadata}}{`list`. An optional list for ancillary metadata.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DatasetProfile-add_metadata"></a>}}
+\if{latex}{\out{\hypertarget{method-DatasetProfile-add_metadata}{}}}
+\subsection{Method \code{add_metadata()}}{
+Adds or updates a metadata entry.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{DatasetProfile$add_metadata(key, value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{Character. The metadata key.}
+
+\item{\code{value}}{Any type. The metadata value.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DatasetProfile-get_metadata"></a>}}
+\if{latex}{\out{\hypertarget{method-DatasetProfile-get_metadata}{}}}
+\subsection{Method \code{get_metadata()}}{
+Retrieves all metadata or a specific entry.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{DatasetProfile$get_metadata(key = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{Character. Optional. If provided, returns the value for that key.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of metadata or a specific metadata value.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DatasetProfile-set_status"></a>}}
+\if{latex}{\out{\hypertarget{method-DatasetProfile-set_status}{}}}
+\subsection{Method \code{set_status()}}{
+Sets the processing status of the dataset.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{DatasetProfile$set_status(new_status)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{new_status}}{Character. The new status.}
 }
 \if{html}{\out{</div>}}
 }

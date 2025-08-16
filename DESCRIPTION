@@ -1,6 +1,6 @@
 Package: constRuct
 Type: Package
-Title: What the Package Does (Title Case)
+Title: A Framework for Building Stateful ETL Pipelines
 Version: 0.1.0
 Authors@R: c(
     person(
@@ -15,8 +15,7 @@ Description: Provides a suite of functions to streamline and standardize Extract
     It features a dual-logging system for both high-level run metadata and 
     granular, step-by-step operational logs using 'log4r'. Includes 
     helpers for integrating 'pointblank' data validation checks and linking 
-    their reports back to the pipeline's metadata log, ensuring data 
-    quality and run traceability.
+    their reports back to the pipeline's metadata log, ensuring data quality and run traceability.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
