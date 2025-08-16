@@ -22,6 +22,9 @@ DatasetProfile <- R6::R6Class(
     #' @field schema A pointblank `col_schema` object.
     schema = NULL,
     
+    #' @field status The current processing status of the dataset (e.g., "raw", "cleaned", "transformed").
+    status = NULL,
+
     #' @field metadata A list for storing any other attributes.
     metadata = list(),
     
@@ -53,8 +56,37 @@ DatasetProfile <- R6::R6Class(
       self$source <- source
       self$schema <- schema
       self$metadata <- metadata
-      
-      private$add_log(glue::glue("Dataset entity '{self$name}' initialized."))
+      self$status <- "initialized"
+
+      private$add_log(glue::glue("Dataset profile '{self$name}' initialized."))
+    },
+
+    #' @description Adds or updates a metadata entry.
+    #' @param key Character. The metadata key.
+    #' @param value Any type. The metadata value.
+    add_metadata = function(key, value) {
+      if (!is.character(key) || length(key) != 1 || nchar(key) == 0) {
+        stop("Metadata 'key' must be a non-empty character string.")
+      }
+      self$metadata[[key]] <- value
+      private$add_log(glue::glue("Metadata '{key}' added/updated for '{self$name}'."))
+    },
+
+    #' @description Retrieves all metadata or a specific entry.
+    #' @param key Character. Optional. If provided, returns the value for that key.
+    #' @return A list of metadata or a specific metadata value.
+    get_metadata = function(key = NULL) {
+      if (is.null(key)) {
+        return(self$metadata)
+      }
+      self$metadata[[key]]
+    },
+
+    #' @description Sets the processing status of the dataset.
+    #' @param new_status Character. The new status.
+    set_status = function(new_status) {
+      self$status <- new_status
+      private$add_log(glue::glue("Status of '{self$name}' changed to '{new_status}'."))
     },
     #' @description
     #' Validate a dataframe against the object's schema.
@@ -69,10 +101,9 @@ DatasetProfile <- R6::R6Class(
     }
   ),
   private = list(
-    # Internal reference to the parent pipeline's logger (optional, but useful)
-    .pipeline_logger = NULL, # Would be set by PipelineBase when adding the DatasetProfile
+   
+    .pipeline_logger = NULL, 
     
-    # Helper function to send logs (for demonstration, would ideally use .pipeline_logger)
     add_log = function(message) {
       cat(glue::glue("[DatasetProfile:{Sys.time()}] {message} \n"))
     }
