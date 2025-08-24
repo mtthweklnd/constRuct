@@ -4,78 +4,75 @@
 #' parameter validation, dataset storage, and logging.
 #' @importFrom glue glue
 #' @importFrom R6 R6Class
+#' @import logger
 #' @export
 PipelineBase <- R6::R6Class(
   "PipelineBase",
   public = list(
     # --- PUBLIC FIELDS ---
-    #' @field pipeline_name Proper name of the pipeline
-    pipeline_name = NULL,
+    #' @field name Proper name of the pipeline
+    name = NULL,
 
-    #' @field pipeline_id Unique Identifier for this pipeline
-    pipeline_id = NULL,
-
-    #' @field params A list to store parameters used by the pipeline.
-    params = NULL,
-
-    #' @field datasets A list to store datasets (e.g., data frames) used or created.
-    datasets = NULL,
+    #' @field id Logging identifier for this pipeline.
+    id = NULL,
 
     # --- PUBLIC METHODS ---
     #' @description constructor
-    #' @param pipeline_name Name of this pipeline.
-    #' @param pipeline_id Identifier for this pipeline
-    #' @param division The division this data belongs to.
-    #' @param program The program subset this data is for.
+    #' @param name Name of this pipeline.
+    #' @param id Identifier for this pipeline, used in logging.
     #' @return A new `PipelineBase` object.
-    initialize = function(
-      pipeline_name,
-      pipeline_id,
-      division = NULL,
-      program = NULL
-    ) {
-      self$pipeline_name <- pipeline_name
-      self$pipeline_id <- pipeline_id
+    initialize = function(name, id) {
+      self$name <- name
+      self$id <- id
+      private$.env <- .system_snapshot
+      private$.start_time <- Sys.time()
+
       private$.run_id <- glue::glue(
-        "run-{pipeline_id}-{format(Sys.time(), '%Y%m%d')}"
+        "run-{id}-{format(Sys.time(), '%Y%m%d')}"
       )
 
       private$.start_logger()
-      private$capture_environment()
-      self$params <- list(division = division, program = program)
 
-      log_info("Pipeline '{self$pipeline_name}' initialized.")
+      log_info("Pipeline initialized.")
     },
-    read_log = function() {
+    #' @description Retrieves pipeline logs
+    #' @return A vector with each log entry
+    log_read = function() {
       readLines(private$.log_file)
     }
   ),
   private = list(
     .env = NULL,
+    .start_time = NULL,
+    .end_time = NULL,
     .run_id = NULL,
     .log_file = NULL,
+    .logger_namespace = NULL,
+
     .start_logger = function() {
-      private$.log_file <- tempfile(fileext = ".log")
-      log_threshold(INFO)
-      log_appender(appender_tee(private$.log_file))
-      log_layout(layout_glue_generator(
-        format = '{level} [{format(Sys.time(), "%Y-%m-%d %H:%M:%S")}]: {msg}'
-      ))
-    },
-    capture_environment = function() {
-      private$.env <- list(
-        config = Sys.getenv("R_CONFIG_ACTIVE", unset = "default"),
-        sysname = Sys.info()[["sysname"]],
-        user = Sys.info()[["user"]],
-        node = Sys.info()[["nodename"]]
+      # Create unique namespace for this pipeline
+      private$.logger_namespace <- glue("{self$id}")
+
+      # Create log file
+      private$.log_file <- file.path(tempdir(), glue("{private$.run_id}.log"))
+
+      # Set logging threshold
+      logger::log_threshold(
+        logger::DEBUG,
+        namespace = private$.logger_namespace
+      )
+
+      pipeline_layout <- logger::layout_glue_generator(
+        format = '{level} [{format(time, "%Y-%m-%d %H:%M:%S")}] [{ns}]: {msg}'
+      )
+
+      logger::log_layout(pipeline_layout, namespace = private$.logger_namespace)
+
+      # Set up file and console appender
+      logger::log_appender(
+        logger::appender_tee(private$.log_file),
+        namespace = private$.logger_namespace
       )
     }
   )
 )
-pipe <- PipelineBase$new("pipeline_name",
-                          "pipeline_id",
-                          division = "NULL",
-                          program = "NULL")
-pipe$read_log()
-
-logger::get_logger_meta_variables()

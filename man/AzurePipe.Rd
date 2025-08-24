@@ -33,10 +33,7 @@ Blob Storage. Inherits parameter handling and logging.
 \if{html}{\out{
 <details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="add_dataset"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-add_dataset'><code>constRuct::PipelineBase$add_dataset()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="add_log"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-add_log'><code>constRuct::PipelineBase$add_log()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="get_dataset"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-get_dataset'><code>constRuct::PipelineBase$get_dataset()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="get_logs"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-get_logs'><code>constRuct::PipelineBase$get_logs()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="constRuct" data-topic="PipelineBase" data-id="log_read"><a href='../../constRuct/html/PipelineBase.html#method-PipelineBase-log_read'><code>constRuct::PipelineBase$log_read()</code></a></span></li>
 </ul>
 </details>
 }}

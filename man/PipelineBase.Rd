@@ -10,13 +10,9 @@ parameter validation, dataset storage, and logging.
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{pipeline_name}}{Proper name of the pipeline}
+\item{\code{name}}{Proper name of the pipeline}
 
-\item{\code{pipeline_id}}{Unique Identifier for this pipeline}
-
-\item{\code{params}}{A list to store parameters used by the pipeline.}
-
-\item{\code{datasets}}{A list to store datasets (e.g., data frames) used or created.}
+\item{\code{id}}{Logging identifier for this pipeline.}
 }
 \if{html}{\out{</div>}}
 }
@@ -24,10 +20,7 @@ parameter validation, dataset storage, and logging.
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-PipelineBase-new}{\code{PipelineBase$new()}}
-\item \href{#method-PipelineBase-add_dataset}{\code{PipelineBase$add_dataset()}}
-\item \href{#method-PipelineBase-get_dataset}{\code{PipelineBase$get_dataset()}}
-\item \href{#method-PipelineBase-add_log}{\code{PipelineBase$add_log()}}
-\item \href{#method-PipelineBase-get_logs}{\code{PipelineBase$get_logs()}}
+\item \href{#method-PipelineBase-log_read}{\code{PipelineBase$log_read()}}
 \item \href{#method-PipelineBase-clone}{\code{PipelineBase$clone()}}
 }
 }
@@ -37,19 +30,15 @@ parameter validation, dataset storage, and logging.
 \subsection{Method \code{new()}}{
 constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineBase$new(pipeline_name, pipeline_id, division = NULL, program = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PipelineBase$new(name, id)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{pipeline_name}}{Name of this pipeline.}
+\item{\code{name}}{Name of this pipeline.}
 
-\item{\code{pipeline_id}}{Identifier for this pipeline}
-
-\item{\code{division}}{The division this data belongs to.}
-
-\item{\code{program}}{The program subset this data is for.}
+\item{\code{id}}{Identifier for this pipeline, used in logging.}
 }
 \if{html}{\out{</div>}}
 }
@@ -58,72 +47,16 @@ A new `PipelineBase` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PipelineBase-add_dataset"></a>}}
-\if{latex}{\out{\hypertarget{method-PipelineBase-add_dataset}{}}}
-\subsection{Method \code{add_dataset()}}{
-Add a dataset to the pipeline's internal storage.
+\if{html}{\out{<a id="method-PipelineBase-log_read"></a>}}
+\if{latex}{\out{\hypertarget{method-PipelineBase-log_read}{}}}
+\subsection{Method \code{log_read()}}{
+Retrieves pipeline logs
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineBase$add_dataset(name, data)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{The name to assign to the dataset (character).}
-
-\item{\code{data}}{The dataset object to store (e.g., a data frame).}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PipelineBase-get_dataset"></a>}}
-\if{latex}{\out{\hypertarget{method-PipelineBase-get_dataset}{}}}
-\subsection{Method \code{get_dataset()}}{
-Retrieve a dataset from the pipeline's storage.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineBase$get_dataset(name)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{The name of the dataset to retrieve.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The dataset object associated with the given name.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PipelineBase-add_log"></a>}}
-\if{latex}{\out{\hypertarget{method-PipelineBase-add_log}{}}}
-\subsection{Method \code{add_log()}}{
-Add a timestamped message to the pipeline's log.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineBase$add_log(message)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{message}}{The message string to add to the log.}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PipelineBase-get_logs"></a>}}
-\if{latex}{\out{\hypertarget{method-PipelineBase-get_logs}{}}}
-\subsection{Method \code{get_logs()}}{
-Retrieve all log messages.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PipelineBase$get_logs()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{PipelineBase$log_read()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-A character vector of all log entries.
+A vector with each log entry
 }
 }
 \if{html}{\out{<hr>}}

@@ -9,13 +9,10 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: Provides a suite of functions to streamline and standardize Extract, 
-    Transform, Load (ETL) pipelines. This package simplifies pipeline setup 
-    by managing database (Azure SQL, SQLite) and remote storage connections. 
-    It features a dual-logging system for both high-level run metadata and 
-    granular, step-by-step operational logs using 'log4r'. Includes 
-    helpers for integrating 'pointblank' data validation checks and linking 
-    their reports back to the pipeline's metadata log, ensuring data quality and run traceability.
+Description: An object-oriented framework for building standardized and
+    stateful Extract, Transform, Load (ETL) pipelines. Use R6 classes
+    to encapsulate run-specific parameters, data, and logs, promoting
+    clean, modular, and reproducible workflows.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -24,9 +21,13 @@ Imports:
     AzureStor (>= 3.7.0),
     R6 (>= 2.6.1),
     glue (>= 1.8.0),
-    assertthat
+    assertthat (>= 0.2.1),
+    logger (>= 0.4.0),
+    purrr
 Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Depends: 
+    R (>= 3.5)
