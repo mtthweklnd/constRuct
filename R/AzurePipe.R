@@ -7,7 +7,7 @@
 #' @importFrom R6 R6Class
 #' @importFrom AzureStor blob_endpoint blob_container list_blob_containers create_blob_container list_blobs get_storage_metadata upload_blob
 #' @importFrom glue glue
-#' @export
+
 AzurePipe <- R6::R6Class(
   "AzurePipe",
   inherit = PipelineBase,

@@ -57,8 +57,6 @@ DatasetProfile <- R6::R6Class(
       self$schema <- schema
       self$metadata <- metadata
       self$status <- "initialized"
-
-      private$add_log(glue::glue("Dataset profile '{self$name}' initialized."))
     },
 
     #' @description Adds or updates a metadata entry.
@@ -69,7 +67,6 @@ DatasetProfile <- R6::R6Class(
         stop("Metadata 'key' must be a non-empty character string.")
       }
       self$metadata[[key]] <- value
-      private$add_log(glue::glue("Metadata '{key}' added/updated for '{self$name}'."))
     },
 
     #' @description Retrieves all metadata or a specific entry.
@@ -86,18 +83,6 @@ DatasetProfile <- R6::R6Class(
     #' @param new_status Character. The new status.
     set_status = function(new_status) {
       self$status <- new_status
-      private$add_log(glue::glue("Status of '{self$name}' changed to '{new_status}'."))
-    },
-    #' @description
-    #' Validate a dataframe against the object's schema.
-    #' @param df The dataframe to validate.
-    #' @return A pointblank `agent` object containing the validation results.
-    validate = function(df) {
-      cat("Validating", deparse(substitute(df)), "against the '", self$name, "' spec...\n", sep = "")
-      
-      # col_validation returns a pointblank agent with the results
-      agent <- col_validation(df, self$schema)
-      return(agent)
     }
   ),
   private = list(

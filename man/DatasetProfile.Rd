@@ -35,7 +35,6 @@ status (e.g., "raw", "cleaned"), and a formal data schema using the
 \item \href{#method-DatasetProfile-add_metadata}{\code{DatasetProfile$add_metadata()}}
 \item \href{#method-DatasetProfile-get_metadata}{\code{DatasetProfile$get_metadata()}}
 \item \href{#method-DatasetProfile-set_status}{\code{DatasetProfile$set_status()}}
-\item \href{#method-DatasetProfile-validate}{\code{DatasetProfile$validate()}}
 \item \href{#method-DatasetProfile-clone}{\code{DatasetProfile$clone()}}
 }
 }
@@ -116,26 +115,6 @@ Sets the processing status of the dataset.
 \item{\code{new_status}}{Character. The new status.}
 }
 \if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-DatasetProfile-validate"></a>}}
-\if{latex}{\out{\hypertarget{method-DatasetProfile-validate}{}}}
-\subsection{Method \code{validate()}}{
-Validate a dataframe against the object's schema.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DatasetProfile$validate(df)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{The dataframe to validate.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A pointblank `agent` object containing the validation results.
 }
 }
 \if{html}{\out{<hr>}}
